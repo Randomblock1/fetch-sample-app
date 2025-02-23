@@ -1,21 +1,22 @@
 package com.randomblock1.fetchsampleapp
 
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.json.JSONArray
-
-const val DATA_URL = "https://fetch-hiring.s3.amazonaws.com/hiring.json"
-val HTTP_CLIENT = OkHttpClient();
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -23,18 +24,29 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        try {
-            val json = getData()
-            val jsonArray = JSONArray(json)
-        } catch (e: Exception) {
-            // Handle exception
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+        val loadingText = findViewById<TextView>(R.id.loadingText)
+
+        val map = sortedMapOf<Int, List<Item>>()
+        val adapter = GroupAdapter(map)
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
+        recyclerView.setHasFixedSize(true)
+
+        CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+            try {
+                val json = getData()
+                val jsonArray = JSONArray(json)
+                val data = parseData(jsonArray)
+                map.putAll(data.groupBy { it.listId })
+                runOnUiThread {
+                    loadingText.visibility = View.GONE
+                    recyclerView.visibility = View.VISIBLE
+                    adapter.notifyDataSetChanged()
+                }
+            } catch (e: Exception) {
+                runOnUiThread { loadingText.text = "Error loading data: ${e.message}" }
+            }
         }
-
-    }
-
-    fun getData(): String {
-        val request = Request.Builder().url(DATA_URL).build();
-        val response = HTTP_CLIENT.newCall(request).execute();
-        return response.body.string();
     }
 }
