@@ -4,6 +4,6 @@
     android:id="@+id/itemNameTextView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp"
-    android:textSize="16sp"
+    android:padding="6dp"
+    android:textSize="20sp"
     tools:text="Example Item" />

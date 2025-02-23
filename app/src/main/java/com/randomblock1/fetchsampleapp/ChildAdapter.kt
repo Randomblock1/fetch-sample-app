@@ -1,6 +1,5 @@
 package com.randomblock1.fetchsampleapp
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

@@ -1,10 +1,9 @@
 package com.randomblock1.fetchsampleapp
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -15,6 +14,8 @@ import kotlinx.coroutines.launch
 import org.json.JSONArray
 
 class MainActivity : AppCompatActivity() {
+
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -45,7 +46,9 @@ class MainActivity : AppCompatActivity() {
                     adapter.notifyDataSetChanged()
                 }
             } catch (e: Exception) {
-                runOnUiThread { loadingText.text = "Error loading data: ${e.message}" }
+                runOnUiThread {
+                    loadingText.text = getString(R.string.error_loading_data, e.message)
+                }
             }
         }
     }

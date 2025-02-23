@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Fetch Sample App</string>
+    <string name="error_loading_data">Error loading data: %1$s</string>
 </resources>

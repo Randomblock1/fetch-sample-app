@@ -3,9 +3,12 @@ package com.randomblock1.fetchsampleapp
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.LinearInterpolator
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlin.Int
 
 class GroupAdapter(private val data: Map<Int, List<Item>>) :
     RecyclerView.Adapter<GroupAdapter.ViewHolder>() {
@@ -17,11 +20,17 @@ class GroupAdapter(private val data: Map<Int, List<Item>>) :
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val listIdTextView = view.findViewById<TextView>(R.id.listIdTextView)
         val innerRecyclerView = view.findViewById<RecyclerView>(R.id.innerRecyclerView)
+        val expandArrowImageView = view.findViewById<ImageView>(R.id.expandCollapseIcon)
+
+        var isExpanded = false
 
         init {
-            // Define click listener for the ViewHolder's View
+
             view.setOnClickListener {
-                innerRecyclerView.visibility = View.VISIBLE
+                expandArrowImageView.animate().rotationBy(180f)
+                    .setInterpolator(LinearInterpolator()).setDuration(250).withLayer()
+                innerRecyclerView.visibility = if (isExpanded) View.GONE else View.VISIBLE
+                isExpanded = !isExpanded
             }
         }
     }
