@@ -24,9 +24,16 @@ fun parseData(data: JSONArray): List<Item> {
         val id = item.getInt("id")
         val listId = item.getInt("listId")
         val name = item.getString("name") // coerces nulls to string "null"
-        if (!name.isEmpty() && name != "null") filteredItems.add(Item(id, listId, name))
+        if (!name.isEmpty() && name != "null") {
+            filteredItems.add(Item(id, listId, name))
+        }
     }
-    filteredItems.sortBy { it.name }
+
+    // Fix sorting (since items are in format Item {num}
+    // but string sorting puts "Item 200" before "Item 20"
+    filteredItems.sortBy {
+        it.name?.substringAfter("Item ")?.toIntOrNull() ?: Int.MAX_VALUE
+    }
 
     return filteredItems
 }
