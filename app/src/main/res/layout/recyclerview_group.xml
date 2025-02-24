@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -26,14 +27,16 @@
             android:id="@+id/expandCollapseIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/arrow_to_expand_collapse"
             android:src="@drawable/baseline_expand_more_24"
-            android:contentDescription="@string/arrow_to_expand_collapse"/>
+            app:tint="?attr/colorOnSurface" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/innerRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:foregroundTint="?attr/colorOnSurface"
         android:visibility="gone"
         tools:listitem="@layout/recyclerview_item" />
 
