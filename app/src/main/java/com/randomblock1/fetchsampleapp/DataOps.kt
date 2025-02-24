@@ -33,7 +33,9 @@ fun parseData(data: JSONArray): List<Item> {
     return sortItems(filteredItems)
 }
 
-// Optimizes item sorting by pre-calculating extracted numbers
+// Sorting lexicographically sometimes isn't the best option
+// like when Item 278 comes before Item 28
+// This sorts by the number in the name or otherwise normally
 fun sortItems(items: List<Item>): List<Item> {
     val regex = Regex("""\w*\s+(\d+)$""")
 
