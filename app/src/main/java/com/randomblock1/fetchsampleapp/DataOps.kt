@@ -8,7 +8,7 @@ val HTTP_CLIENT = OkHttpClient()
 const val DATA_URL = "https://fetch-hiring.s3.amazonaws.com/hiring.json"
 
 data class Item(
-    val id: Int, val listId: Int, val name: String?
+    val id: Int, val listId: Int, val name: String
 )
 
 // Can throw exception, but handled in MainActivity
@@ -30,13 +30,33 @@ fun parseData(data: JSONArray): List<Item> {
         }
     }
 
-    // Fix sorting (since items are in format Item $int
-    // but string sorting puts "Item 200" before "Item 20")
-    // Could sort by id since in current data, name == Item $id
-    // But requirements specify sorting by name
-    filteredItems.sortBy {
-        it.name?.substringAfter("Item ")?.toIntOrNull() ?: Int.MAX_VALUE
+    return sortItems(filteredItems)
+}
+
+// Optimizes item sorting by pre-calculating extracted numbers
+fun sortItems(items: List<Item>): List<Item> {
+    val regex = Regex("""\w*\s+(\d+)$""")
+
+    // Use a HashMap to store extracted numbers to avoid redundant regex operations
+    val itemNumbers = HashMap<String, Int>()
+    items.forEach { item ->
+        val match = regex.find(item.name)
+        if (match != null) {
+            itemNumbers[item.name] = match.groupValues[1].toInt()
+        }
     }
 
-    return filteredItems
+    val sortedItems = items.sortedWith { a, b ->
+        when {
+            itemNumbers.containsKey(a.name) && itemNumbers.containsKey(b.name) -> {
+                val numA = itemNumbers[a.name]!!
+                val numB = itemNumbers[b.name]!!
+                numA.compareTo(numB)
+            }
+            // If one isn't in the usual format, sort normally
+            else -> a.name.compareTo(b.name)
+        }
+    }
+
+    return sortedItems
 }
