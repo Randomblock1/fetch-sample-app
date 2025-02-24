@@ -3,7 +3,9 @@ package com.randomblock1.fetchsampleapp
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
+import android.view.animation.RotateAnimation
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,13 +23,27 @@ class GroupAdapter(private val data: Map<Int, List<Item>>) :
         val innerRecyclerView = view.findViewById<RecyclerView>(R.id.innerRecyclerView)
         val expandArrowImageView = view.findViewById<ImageView>(R.id.expandCollapseIcon)
 
+        val expandAnimation = RotateAnimation(0f, 180f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
+        val collapseAnimation = RotateAnimation(180f, 0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
+
         var isExpanded = false
 
         init {
+            expandAnimation.duration = 250
+            expandAnimation.interpolator = LinearInterpolator()
+            expandAnimation.fillAfter = true
+            collapseAnimation.duration = 250
+            collapseAnimation.interpolator = LinearInterpolator()
+            collapseAnimation.fillAfter = true
+
             view.setOnClickListener {
-                expandArrowImageView.animate().rotationBy(180f)
-                    .setInterpolator(LinearInterpolator()).setDuration(250).withLayer()
-                innerRecyclerView.visibility = if (isExpanded) View.GONE else View.VISIBLE
+                if (isExpanded) {
+                    expandArrowImageView.startAnimation(collapseAnimation)
+                    innerRecyclerView.visibility = View.GONE
+                } else {
+                    expandArrowImageView.startAnimation(expandAnimation)
+                    innerRecyclerView.visibility = View.VISIBLE
+                }
                 isExpanded = !isExpanded
             }
         }
