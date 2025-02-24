@@ -11,6 +11,7 @@ data class Item(
     val id: Int, val listId: Int, val name: String?
 )
 
+// Can throw exception, but handled in MainActivity
 fun getData(): String {
     val request = Request.Builder().url(DATA_URL).build()
     val response = HTTP_CLIENT.newCall(request).execute()
@@ -23,14 +24,16 @@ fun parseData(data: JSONArray): List<Item> {
         val item = data.getJSONObject(i)
         val id = item.getInt("id")
         val listId = item.getInt("listId")
-        val name = item.getString("name") // coerces nulls to string "null"
+        val name = item.getString("name") // coerces null to string "null"
         if (!name.isEmpty() && name != "null") {
             filteredItems.add(Item(id, listId, name))
         }
     }
 
-    // Fix sorting (since items are in format Item {num}
-    // but string sorting puts "Item 200" before "Item 20"
+    // Fix sorting (since items are in format Item $int
+    // but string sorting puts "Item 200" before "Item 20")
+    // Could sort by id since in current data, name == Item $id
+    // But requirements specify sorting by name
     filteredItems.sortBy {
         it.name?.substringAfter("Item ")?.toIntOrNull() ?: Int.MAX_VALUE
     }

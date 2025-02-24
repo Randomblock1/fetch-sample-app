@@ -36,8 +36,8 @@ class MainActivity : AppCompatActivity() {
 
         CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
             try {
-                val json = getData()
-                val jsonArray = JSONArray(json)
+                val requestBody = getData()
+                val jsonArray = JSONArray(requestBody)
                 val data = parseData(jsonArray)
                 map.putAll(data.groupBy { it.listId })
                 runOnUiThread {

@@ -10,7 +10,8 @@
         android:id="@+id/headerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
 
         <TextView
             android:id="@+id/listIdTextView"
@@ -25,7 +26,8 @@
             android:id="@+id/expandCollapseIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/baseline_expand_more_24" />
+            android:src="@drawable/baseline_expand_more_24"
+            android:contentDescription="@string/arrow_to_expand_collapse"/>
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
